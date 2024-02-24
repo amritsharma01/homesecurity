@@ -1,9 +1,7 @@
 import tensorflow as tf
 import cv2
 import os
-import mediapipe
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
 from tensorflow.keras.applications.vgg16 import VGG16
 from tensorflow.keras.applications.vgg16 import preprocess_input
@@ -90,6 +88,7 @@ model.compile(
 model.fit(train_dataset,epochs=10)
 model.evaluate(test_dataset)
 
+#Validate model
 img=cv2.imread("Validation/image125.jpg")
 feature=model.predict(np.array([img]))
 print(feature.shape)
