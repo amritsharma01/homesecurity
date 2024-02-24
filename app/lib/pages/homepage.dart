@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:minorprojapp/widgets/verifiedscreen.dart';
 import 'package:path/path.dart' as Path;
@@ -79,22 +80,28 @@ class _HomePageState extends State<HomePage> {
           receivedName = personName;
         });
       } else {
+        if (kDebugMode) {
+          print("failed");
+        }
         // ignore: use_build_context_synchronously
-        showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialogBox(
-                  alertText:
-                      'Failed to send image to server. Status code: ${response.statusCode}');
-            });
+        // showDialog(
+        //     context: context,
+        //     builder: (context) {
+        //       return AlertDialogBox(
+        //           alertText:
+        //               'Failed to send image to server. Status code: ${response.statusCode}');
+        //     });
       }
     } catch (e) {
       // ignore: use_build_context_synchronously
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialogBox(alertText: e.toString());
-          });
+      // showDialog(
+      //     context: context,
+      //     builder: (context) {
+      //       return AlertDialogBox(alertText: e.toString());
+      //     });
+      if (kDebugMode) {
+        print(e.toString());
+      }
     }
   }
 
@@ -128,51 +135,58 @@ class _HomePageState extends State<HomePage> {
           const SizedBox(
             height: 20,
           ),
-          if (receivedName != null) Text('Name: $receivedName'),
-          const SizedBox(
-            height: 50,
-          ),
           Center(
-            child: GestureDetector(
-              onTap: () {
-                getImage(ImageSource.camera);
-              },
-              child: Container(
-                height: 50,
-                width: 150,
-                decoration: BoxDecoration(
-                  color: Colors.green.shade300,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Center(
-                    child: tapped != true
-                        ? const Text(
-                            "CAPTURE",
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
-                          )
-                        : const Text(
-                            "RE-CAPTURE",
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
-                          )),
+              child: GestureDetector(
+            onTap: () {
+              getImage(ImageSource.camera);
+            },
+            child: Container(
+              height: 50,
+              width: 150,
+              decoration: BoxDecoration(
+                color: Colors.green.shade300,
+                borderRadius: BorderRadius.circular(20),
               ),
+              child: const Center(
+                  child: Text(
+                "CAPTURE",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              )),
             ),
-          ),
+          )),
           const SizedBox(
             height: 20,
           ),
           Center(
             child: GestureDetector(
-              onTap: _image != null && tapped == false
+              onTap: _image != null
                   ? () {
                       sendImageToServer(_image!);
-                      setState(() {
-                        tapped = true;
-                      });
+                      if (receivedName != null) {
+                        if (receivedName == "unknown") {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return VerifiedScreen(
+                                    name:
+                                        "${receivedName!}(Possible Intruder!)",
+                                    imgpath: "lib/assets/thief.jpg");
+                              });
+                        } else {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return VerifiedScreen(
+                                    name: receivedName!,
+                                    imgpath:
+                                        "lib/assets/${receivedName!.toLowerCase()}.jpg");
+                              });
+                        }
+                      }
                     }
                   : null,
               // Only allow onTap if image is selected
+
               child: Container(
                 height: 50,
                 width: 150,
@@ -188,18 +202,6 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          TextButton(
-              onPressed: () {
-                showDialog(
-                    context: context,
-                    builder: (context) {
-                      return VerifiedScreen(
-                        name: "amrit",
-                        imgpath: "lib/assets/amrit.jpg",
-                      );
-                    });
-              },
-              child: Text("PRESS ME"))
         ],
       ),
     );
