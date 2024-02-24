@@ -108,7 +108,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade200,
+      backgroundColor: Colors.grey.shade300,
       appBar: AppBar(
         title: const Center(
           child: Text(
@@ -118,7 +118,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ),
-        backgroundColor: Colors.green.shade100,
+        backgroundColor: Colors.green.shade200,
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -128,12 +128,12 @@ class _HomePageState extends State<HomePage> {
             width: 200,
             child: _image != null
                 ? ClipRRect(
-                    borderRadius: BorderRadius.circular(40),
+                    borderRadius: BorderRadius.circular(100),
                     child: Image.file(_image!))
                 : Image.asset("lib/assets/man.png"),
           ),
           const SizedBox(
-            height: 20,
+            height: 40,
           ),
           Center(
               child: GestureDetector(
@@ -142,7 +142,7 @@ class _HomePageState extends State<HomePage> {
             },
             child: Container(
               height: 50,
-              width: 150,
+              width: 200,
               decoration: BoxDecoration(
                 color: Colors.green.shade300,
                 borderRadius: BorderRadius.circular(20),
@@ -150,7 +150,7 @@ class _HomePageState extends State<HomePage> {
               child: const Center(
                   child: Text(
                 "CAPTURE",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
               )),
             ),
           )),
@@ -160,36 +160,56 @@ class _HomePageState extends State<HomePage> {
           Center(
             child: GestureDetector(
               onTap: _image != null
-                  ? () {
-                      sendImageToServer(_image!);
+                  ? () async {
+                      // Show loading dialog immediately
+                      showDialog(
+                          context: context,
+                          barrierDismissible:
+                              false, // Prevents the dialog from closing by touching outside
+                          builder: (context) {
+                            return const Center(
+                                child: CircularProgressIndicator(
+                              backgroundColor: Colors.black45,
+                              color: Colors.green,
+                            ));
+                          });
+
+                      await sendImageToServer(_image!);
+
+                      Navigator.of(context).pop();
                       if (receivedName != null) {
-                        if (receivedName == "unknown") {
+                        if (receivedName!.toLowerCase() == "unknown") {
+                          // ignore: use_build_context_synchronously
                           showDialog(
                               context: context,
                               builder: (context) {
                                 return VerifiedScreen(
-                                    name:
-                                        "${receivedName!}(Possible Intruder!)",
-                                    imgpath: "lib/assets/thief.jpg");
+                                  color: Colors.red.shade200,
+                                  name: receivedName!,
+                                  imgpath: "lib/assets/thief.jpg",
+                                  verified: "lib/assets/unverified.png",
+                                );
                               });
                         } else {
+                          // ignore: use_build_context_synchronously
                           showDialog(
                               context: context,
                               builder: (context) {
                                 return VerifiedScreen(
-                                    name: receivedName!,
-                                    imgpath:
-                                        "lib/assets/${receivedName!.toLowerCase()}.jpg");
+                                  color: Colors.green.shade100,
+                                  name: receivedName!,
+                                  imgpath:
+                                      "lib/assets/${receivedName!.toLowerCase()}.jpg",
+                                  verified: "lib/assets/verified.png",
+                                );
                               });
                         }
                       }
                     }
                   : null,
-              // Only allow onTap if image is selected
-
               child: Container(
                 height: 50,
-                width: 150,
+                width: 200,
                 decoration: BoxDecoration(
                   color: Colors.green.shade300,
                   borderRadius: BorderRadius.circular(20),
@@ -197,7 +217,7 @@ class _HomePageState extends State<HomePage> {
                 child: const Center(
                     child: Text(
                   "VERIFY",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                 )),
               ),
             ),
