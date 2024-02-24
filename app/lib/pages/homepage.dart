@@ -1,12 +1,15 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:minorprojapp/widgets/verifiedscreen.dart';
 import 'package:path/path.dart' as Path;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+
+import '../widgets/alert_dialogbox.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -19,7 +22,7 @@ class _HomePageState extends State<HomePage> {
   File? _image;
   String? img;
   String? receivedName;
-
+  bool tapped = false;
   Future getImage(ImageSource source) async {
     try {
       final image = await ImagePicker().pickImage(source: source);
@@ -61,7 +64,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> sendImageToServer(File imageFile) async {
     try {
-      final url = Uri.parse('http://192.168.0.103:8000/recognize-image/');
+      final url = Uri.parse('http://192.168.1.120:8000/recognize-image/');
       final request = http.MultipartRequest('POST', url);
       request.files
           .add(await http.MultipartFile.fromPath('image', imageFile.path));
@@ -76,19 +79,38 @@ class _HomePageState extends State<HomePage> {
           receivedName = personName;
         });
       } else {
-        print(
-            'Failed to send image to server. Status code: ${response.statusCode}');
+        // ignore: use_build_context_synchronously
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialogBox(
+                  alertText:
+                      'Failed to send image to server. Status code: ${response.statusCode}');
+            });
       }
     } catch (e) {
-      print('Error sending image to server: $e');
+      // ignore: use_build_context_synchronously
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialogBox(alertText: e.toString());
+          });
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade200,
       appBar: AppBar(
-        title: const Text("Security System"),
+        title: const Center(
+          child: Text(
+            "Security System",
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
         backgroundColor: Colors.green.shade100,
       ),
       body: Column(
@@ -122,11 +144,18 @@ class _HomePageState extends State<HomePage> {
                   color: Colors.green.shade300,
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: const Center(
-                    child: Text(
-                  "CAPTURE",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                )),
+                child: Center(
+                    child: tapped != true
+                        ? const Text(
+                            "CAPTURE",
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                          )
+                        : const Text(
+                            "RE-CAPTURE",
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          )),
               ),
             ),
           ),
@@ -135,9 +164,15 @@ class _HomePageState extends State<HomePage> {
           ),
           Center(
             child: GestureDetector(
-              onTap: _image != null
-                  ? () => sendImageToServer(_image!)
-                  : null, // Only allow onTap if image is selected
+              onTap: _image != null && tapped == false
+                  ? () {
+                      sendImageToServer(_image!);
+                      setState(() {
+                        tapped = true;
+                      });
+                    }
+                  : null,
+              // Only allow onTap if image is selected
               child: Container(
                 height: 50,
                 width: 150,
@@ -153,6 +188,18 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
+          TextButton(
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return VerifiedScreen(
+                        name: "amrit",
+                        imgpath: "lib/assets/amrit.jpg",
+                      );
+                    });
+              },
+              child: Text("PRESS ME"))
         ],
       ),
     );
