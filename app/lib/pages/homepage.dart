@@ -1,14 +1,15 @@
+import 'dart:convert';
 import 'dart:io';
+import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as Path;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:http' as http;
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -17,27 +18,30 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   File? _image;
   String? img;
+  String? receivedName;
+
   Future getImage(ImageSource source) async {
     try {
       final image = await ImagePicker().pickImage(source: source);
       if (image == null) {
         return;
       } else {
-        // final imageTemporary = File(image.path);
         final cropimage = await cropImage(image.path);
         final finalImage = await saveFilePermanently(cropimage!);
-
         setState(() {
           this._image = finalImage;
           img = finalImage.path;
+          receivedName = null; // Reset received name when new image is selected
         });
+
+        // Send the image to the server
       }
     } on PlatformException catch (e) {
       print(e);
     }
   }
 
-  Future<String?> cropImage(imageFile) async {
+  Future<String?> cropImage(String imageFile) async {
     CroppedFile? croppedImage = await ImageCropper().cropImage(
         sourcePath: imageFile,
         aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1));
@@ -84,11 +88,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Center(
-            child: Text(
-          "Security System",
-          style: TextStyle(fontWeight: FontWeight.w500),
-        )),
+        title: const Text("Security System"),
         backgroundColor: Colors.green.shade100,
       ),
       body: Column(
@@ -104,6 +104,10 @@ class _HomePageState extends State<HomePage> {
                 : Image.asset("lib/assets/man.png"),
           ),
           const SizedBox(
+            height: 20,
+          ),
+          if (receivedName != null) Text('Name: $receivedName'),
+          const SizedBox(
             height: 50,
           ),
           Center(
@@ -115,7 +119,7 @@ class _HomePageState extends State<HomePage> {
                 height: 50,
                 width: 150,
                 decoration: BoxDecoration(
-                  color: Colors.green.shade200,
+                  color: Colors.green.shade300,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: const Center(
@@ -131,14 +135,14 @@ class _HomePageState extends State<HomePage> {
           ),
           Center(
             child: GestureDetector(
-              onTap: () {
-                getImage(ImageSource.camera);
-              },
+              onTap: _image != null
+                  ? () => sendImageToServer(_image!)
+                  : null, // Only allow onTap if image is selected
               child: Container(
                 height: 50,
                 width: 150,
                 decoration: BoxDecoration(
-                  color: Colors.green.shade200,
+                  color: Colors.green.shade300,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: const Center(
