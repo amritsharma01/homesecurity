@@ -61,7 +61,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> sendImageToServer(File imageFile) async {
     try {
-      final url = Uri.parse('http://192.168.0.103:8000/recognize-image/');
+      final url = Uri.parse('http://192.168.0.100:8000/recognize-image/');
       final request = http.MultipartRequest('POST', url);
       request.files
           .add(await http.MultipartFile.fromPath('image', imageFile.path));

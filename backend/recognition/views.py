@@ -10,6 +10,7 @@ import os
 from django.conf import settings
 import tensorflow as tf
 
+prototype_model=tf.keras.models.load_model('Prototype1.keras')
 
 class RecognizeImageView(APIView):
     parser_classes = (MultiPartParser, FormParser)
@@ -50,7 +51,6 @@ class RecognizeImageView(APIView):
             cropped_face = image[ymin:ymin+height, xmin:xmin+width]
             cropped_face=cv2.resize(cropped_face,(224,224))
 
-            prototype_model=tf.keras.models.load_model('Prototype1.keras')
             feature=prototype_model.predict(np.array([cropped_face]))
             name=''
             if (feature.max()==feature[0,2]):
