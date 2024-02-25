@@ -10,6 +10,7 @@ import os
 from django.conf import settings
 import tensorflow as tf
 
+prototype_model=tf.keras.models.load_model('Prototype1.keras')
 
 class RecognizeImageView(APIView):
     parser_classes = (MultiPartParser, FormParser)
