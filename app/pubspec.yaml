@@ -31,7 +31,7 @@ dependencies:
   flutter:
     sdk: flutter
   image_picker:
-  path_provider:
+  path_provider: ^2.1.2
   image_cropper:
   http:
   

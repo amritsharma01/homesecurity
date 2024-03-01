@@ -3,15 +3,20 @@ import 'package:google_fonts/google_fonts.dart';
 
 // ignore: must_be_immutable
 class VerifiedScreen extends StatefulWidget {
-  late String name;
+  late String name, text;
   late String imgpath;
   late String verified;
-  Color color;
+  Color color, color2;
+  void Function()? ontap;
+
   VerifiedScreen(
       {super.key,
+      required this.ontap,
       required this.name,
       required this.imgpath,
       required this.color,
+      required this.text,
+      required this.color2,
       required this.verified});
 
   @override
@@ -36,20 +41,6 @@ class _VerifiedScreenState extends State<VerifiedScreen> {
                     widget.verified,
                     height: 40,
                   ),
-                  IconButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      icon: const Padding(
-                        padding: EdgeInsets.only(
-                          left: 10,
-                        ),
-                        child: Icon(
-                          Icons.close_rounded,
-                          color: Colors.black,
-                          size: 30,
-                        ),
-                      ))
                 ],
               ),
               const SizedBox(
@@ -70,6 +61,18 @@ class _VerifiedScreenState extends State<VerifiedScreen> {
                   fontSize: 44,
                 ),
               ),
+              GestureDetector(
+                onTap: widget.ontap,
+                child: Container(
+                  height: 40,
+                  width: 100,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: widget.color2,
+                  ),
+                  child: Text(widget.text),
+                ),
+              )
             ],
           ),
         ),

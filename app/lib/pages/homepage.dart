@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:minorprojapp/pages/private_space.dart';
 import 'package:minorprojapp/utils/verifiedscreen.dart';
 import 'package:path/path.dart' as Path;
 import 'package:flutter/material.dart';
@@ -9,7 +10,6 @@ import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
-
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -22,6 +22,7 @@ class _HomePageState extends State<HomePage> {
   File? _image;
   String? img;
   String? receivedName;
+  String? userid;
   bool tapped = false;
   Future getImage(ImageSource source) async {
     try {
@@ -74,9 +75,11 @@ class _HomePageState extends State<HomePage> {
 
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
-        final personName = jsonResponse['person_name'];
+        final personName = jsonResponse['name'];
+        final id = jsonResponse['id'];
         setState(() {
           receivedName = personName;
+          userid = id;
         });
       } else {
         if (kDebugMode) {
@@ -98,6 +101,22 @@ class _HomePageState extends State<HomePage> {
       //     builder: (context) {
       //       return AlertDialogBox(alertText: e.toString());
       //     });
+      if (kDebugMode) {
+        print(e.toString());
+      }
+    }
+  }
+
+  Future<void> openLock(String id) async {
+    try {
+      final url = Uri.parse('http://192.168.1.125/openlock?id=$id');
+      var response = await http.get(url);
+      if (response.statusCode == 200) {
+        print(response);
+      } else {
+        print("ERROR");
+      }
+    } catch (e) {
       if (kDebugMode) {
         print(e.toString());
       }
@@ -176,6 +195,7 @@ class _HomePageState extends State<HomePage> {
                       await sendImageToServer(_image!);
 
                       Navigator.of(context).pop();
+                      print(receivedName);
                       if (receivedName != null) {
                         if (receivedName!.toLowerCase() == "unknown") {
                           // ignore: use_build_context_synchronously
@@ -183,10 +203,15 @@ class _HomePageState extends State<HomePage> {
                               context: context,
                               builder: (context) {
                                 return VerifiedScreen(
+                                  ontap: () {
+                                    Navigator.pop(context);
+                                  },
                                   color: Colors.red.shade200,
                                   name: receivedName!,
                                   imgpath: "lib/assets/thief.jpg",
                                   verified: "lib/assets/unverified.png",
+                                  color2: Colors.red.shade400,
+                                  text: "CLOSE",
                                 );
                               });
                         } else {
@@ -195,11 +220,16 @@ class _HomePageState extends State<HomePage> {
                               context: context,
                               builder: (context) {
                                 return VerifiedScreen(
+                                  ontap: () {
+                                    openLock(userid!);
+                                  },
                                   color: Colors.green.shade100,
                                   name: receivedName!,
                                   imgpath:
                                       "lib/assets/${receivedName!.toLowerCase()}.jpg",
                                   verified: "lib/assets/verified.png",
+                                  text: "PROCEED",
+                                  color2: Colors.green.shade400,
                                 );
                               });
                         }
