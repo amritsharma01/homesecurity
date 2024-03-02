@@ -1,30 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 
 // ignore: must_be_immutable
-class VerifiedScreen extends StatefulWidget {
+class AnimationDialog extends StatefulWidget {
   late String name;
   late String text;
-  late String imgpath;
-  late String verified;
+  late String animationpath;
   Color color, color2;
-  void Function()? ontap;
-
-  VerifiedScreen(
-      {super.key,
-      required this.ontap,
-      required this.name,
-      required this.imgpath,
-      required this.color,
-      required this.text,
-      required this.color2,
-      required this.verified});
+  void Function()? onTap;
+  AnimationDialog({
+    super.key,
+    required this.name,
+    required this.text,
+    required this.animationpath,
+    required this.color,
+    required this.color2,
+    required this.onTap,
+  });
 
   @override
-  State<VerifiedScreen> createState() => _VerifiedScreenState();
+  State<AnimationDialog> createState() => _AnimationDialogState();
 }
 
-class _VerifiedScreenState extends State<VerifiedScreen> {
+class _AnimationDialogState extends State<AnimationDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -32,22 +31,18 @@ class _VerifiedScreenState extends State<VerifiedScreen> {
       content: Padding(
         padding: const EdgeInsets.all(5.0),
         child: Container(
-          height: 450,
+          height: 400,
           width: 250,
           child: Column(
             children: [
-              Image.asset(
-                widget.verified,
-                height: 40,
-              ),
               const SizedBox(
-                height: 20,
+                height: 10,
               ),
               SizedBox(
                 height: 250,
                 child: ClipRRect(
                     borderRadius: BorderRadius.circular(1000),
-                    child: Image.asset(widget.imgpath)),
+                    child: Lottie.asset(widget.animationpath, repeat: false)),
               ),
               const SizedBox(
                 height: 20,
@@ -55,14 +50,16 @@ class _VerifiedScreenState extends State<VerifiedScreen> {
               Text(
                 widget.name,
                 style: GoogleFonts.bebasNeue(
-                  fontSize: 44,
+                  fontSize: 31,
                 ),
               ),
               const SizedBox(
-                height: 7,
+                height: 17,
               ),
               GestureDetector(
-                onTap: widget.ontap,
+                onTap:
+                  widget.onTap,
+              
                 child: Container(
                   height: 50,
                   width: 120,

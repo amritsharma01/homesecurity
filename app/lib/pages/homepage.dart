@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'package:minorprojapp/pages/private_space.dart';
+import 'package:minorprojapp/utils/animation.dart';
 import 'package:minorprojapp/utils/verifiedscreen.dart';
 import 'package:path/path.dart' as Path;
 import 'package:flutter/material.dart';
@@ -123,6 +123,22 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  Future<void> Lock() async {
+    try {
+      final url = Uri.parse('http://192.168.1.125/lock?id=lock');
+      var response = await http.get(url);
+      if (response.statusCode == 200) {
+        print(response);
+      } else {
+        print("ERROR");
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print(e.toString());
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -210,7 +226,7 @@ class _HomePageState extends State<HomePage> {
                                   name: receivedName!,
                                   imgpath: "lib/assets/thief.jpg",
                                   verified: "lib/assets/unverified.png",
-                                  color2: Colors.red.shade400,
+                                  color2: Colors.red.shade300,
                                   text: "CLOSE",
                                 );
                               });
@@ -222,13 +238,47 @@ class _HomePageState extends State<HomePage> {
                                 return VerifiedScreen(
                                   ontap: () {
                                     openLock(userid!);
+                                    Navigator.pop(context);
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AnimationDialog(
+                                              onTap: () {
+                                                Lock();
+                                                Navigator.pop(context);
+                                                showDialog(
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return AnimationDialog(
+                                                          name:
+                                                              "Succesfully Locked!",
+                                                          text: "CLOSE",
+                                                          animationpath:
+                                                              "lib/assets/lock.json",
+                                                          color: Colors
+                                                              .green.shade200,
+                                                          color2: Colors
+                                                              .green.shade300,
+                                                          onTap: () {
+                                                            Navigator.pop(
+                                                                context);
+                                                          });
+                                                    });
+                                              },
+                                              name: "Succesfully Unlocked!",
+                                              text: "LOCK",
+                                              animationpath:
+                                                  "lib/assets/unlock.json",
+                                              color: Colors.green.shade200,
+                                              color2: Colors.green.shade400);
+                                        });
                                   },
-                                  color: Colors.green.shade100,
+                                  color: Colors.green.shade200,
                                   name: receivedName!,
                                   imgpath:
                                       "lib/assets/${receivedName!.toLowerCase()}.jpg",
                                   verified: "lib/assets/verified.png",
-                                  text: "PROCEED",
+                                  text: "UNLOCK",
                                   color2: Colors.green.shade400,
                                 );
                               });
