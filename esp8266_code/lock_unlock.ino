@@ -118,7 +118,7 @@ void onOpen()
 }
 void setup(void)
 {
-  s1.attach(0);
+  s1.attach(0, 500, 2400);
   pinMode(led, OUTPUT);
   digitalWrite(led, 0);
   Serial.begin(115200);
