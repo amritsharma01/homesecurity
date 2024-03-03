@@ -98,9 +98,13 @@ class _HomePageState extends State<HomePage> {
       final url = Uri.parse('http://192.168.1.125/openlock?id=$id');
       var response = await http.get(url);
       if (response.statusCode == 200) {
-        print(response);
+        print(response.body);
+      } else if (response.statusCode == 403) {
+        print(response.body);
+      } else if (response.statusCode == 401) {
+        print(response.body);
       } else {
-        print("ERROR");
+        print("ERROR !");
       }
     } catch (e) {
       if (kDebugMode) {
@@ -114,7 +118,7 @@ class _HomePageState extends State<HomePage> {
       final url = Uri.parse('http://192.168.1.125/lock?id=lock');
       var response = await http.get(url);
       if (response.statusCode == 200) {
-        print(response);
+        print(response.body);
       } else {
         print("ERROR");
       }
@@ -228,6 +232,7 @@ class _HomePageState extends State<HomePage> {
                                     openLock(userid!);
                                     Navigator.pop(context);
                                     showDialog(
+                                       barrierDismissible: false,
                                         context: context,
                                         builder: (context) {
                                           return AnimationDialog(
@@ -290,6 +295,28 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
+          const SizedBox(
+            height: 20,
+          ),
+          Center(
+              child: GestureDetector(
+            onTap: () {
+              Lock();
+            },
+            child: Container(
+              height: 50,
+              width: 200,
+              decoration: BoxDecoration(
+                color: Colors.green.shade300,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: const Center(
+                  child: Text(
+                "LOCK",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+              )),
+            ),
+          )),
         ],
       ),
     );

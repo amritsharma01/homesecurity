@@ -5,7 +5,7 @@
 #include <StreamString.h>
 #include <Servo.h>
 Servo s1;
-
+bool isLocked = false;
 #ifndef STASSID
 #define STASSID "lucifer999_2"
 #define STAPSK "GharbetiLaiSodh!"
@@ -101,19 +101,29 @@ void servoRotateLock()
 void onClosed()
 {
   String id = server.arg("id"); // this lets you access a query param (http://x.x.x.x/action1?value=1)
-  if (id = "lock")
+  if (id = "lock" && isLocked == false)
   {
-    server.send(200, "LOCKED");
+    server.send(200, "LOCKED SUCCESFULLY");
     servoRotateLock();
+    isLocked = true;
   }
 }
 void onOpen()
 {
   String id = server.arg("id"); // this lets you access a query param (http://x.x.x.x/action1?value=1)
-  if (id == "101101" || id == "101102" || id == "101103")
+  if (id == "101101" && isLocked == true)
   {
-    server.send(200, "LOCK OPENED");
+    server.send(200, "UNLOCKED SUCCESFULLY");
     servoRotateunLock();
+    isLocked = false;
+  }
+  else if (isLocked == false)
+  {
+    server.send(403, "Already Locked");
+  }
+  else
+  {
+    server.send(401, "Un Authorized");
   }
 }
 void setup(void)

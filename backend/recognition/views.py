@@ -10,9 +10,8 @@ import os
 from django.conf import settings
 import tensorflow as tf
 
-      # Initialize MediaPipe Face Detection
+      
 prototype_model=tf.keras.models.load_model('../siamese/model/test3.keras')
-        # Initialize MediaPipe Face Detection
 mp_face_detection = mp.solutions.face_detection
 face_detection = mp_face_detection.FaceDetection(min_detection_confidence=0.5)
 
@@ -59,6 +58,7 @@ class RecognizeImageView(APIView):
             #     name='Biraj'
             if (feature.max()==feature[0,1]):
                 name='Unknown'
+                id='00000'
             if (feature.max()==feature[0,0]):
                 name='Amrit'
                 id='101101'
