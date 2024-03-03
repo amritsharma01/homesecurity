@@ -47,6 +47,7 @@ app.*.map.json
 *.pyc
 __pycache__
 db.sqlite3
+model/
 media
 
 # Backup files # 
@@ -99,7 +100,7 @@ dist/
 downloads/ 
 eggs/ 
 .eggs/ 
-lib/ 
+ 
 lib64/ 
 parts/ 
 sdist/ 

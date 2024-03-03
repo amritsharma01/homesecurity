@@ -12,6 +12,8 @@ import tensorflow as tf
 
 prototype_model=tf.keras.models.load_model('Prototype1.keras')
       # Initialize MediaPipe Face Detection
+prototype_model=tf.keras.models.load_model('../model/test3.keras')
+        # Initialize MediaPipe Face Detection
 mp_face_detection = mp.solutions.face_detection
 face_detection = mp_face_detection.FaceDetection(min_detection_confidence=0.5)
 
@@ -21,9 +23,9 @@ class RecognizeImageView(APIView):
         if 'image' in request.FILES:
             image_file = request.FILES['image']
             # Process the image (e.g., recognition)
-            person_name = self.process_image(image_file)
+            user_info = self.process_image(image_file)
             # Return the response
-            return Response({'person_name': person_name}, status=200)
+            return Response(user_info, status=200)
         else:
             return Response({'error': 'No image file provided'}, status=400)
 
@@ -31,7 +33,7 @@ class RecognizeImageView(APIView):
         # Load the image
         image = np.array(Image.open(image_file))
 
-  
+
 
         # Convert the image to RGB
         image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -53,21 +55,26 @@ class RecognizeImageView(APIView):
 
             feature=prototype_model.predict(np.array([cropped_face]))
             name=''
-            if (feature.max()==feature[0,2]):
-                name='Biraj'
+            id=''
+            # if (feature.max()==feature[0,2]):
+            #     name='Biraj'
             if (feature.max()==feature[0,1]):
-                name='Ashim'
+                name='Unknown'
             if (feature.max()==feature[0,0]):
                 name='Amrit'
-
-
-
+                id='101101'
             # Save the cropped face to a local directory
             cropped_face_filename = 'cropped_face.jpg'
             cropped_face_path = os.path.join(settings.BASE_DIR, 'cropped_faces', cropped_face_filename)
             Image.fromarray(cropped_face).save(cropped_face_path)
 
             # Return the detected person's name and the path to the cropped face
-            return f'{name}'
+            return {
+                "name": name,
+                "id": id
+            }
         else:
-            return 'Unknown'
+            return {
+                "name": "Unknown",
+                "id": "0000"
+            }
