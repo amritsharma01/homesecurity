@@ -42,7 +42,10 @@ class _AnimationDialogState extends State<AnimationDialog> {
                 height: 250,
                 child: ClipRRect(
                     borderRadius: BorderRadius.circular(1000),
-                    child: Lottie.asset(widget.animationpath, repeat: false)),
+                    child: Lottie.asset(
+                      widget.animationpath,
+                      repeat: false,
+                    )),
               ),
               const SizedBox(
                 height: 20,
@@ -57,9 +60,7 @@ class _AnimationDialogState extends State<AnimationDialog> {
                 height: 17,
               ),
               GestureDetector(
-                onTap:
-                  widget.onTap,
-              
+                onTap: widget.onTap,
                 child: Container(
                   height: 50,
                   width: 120,

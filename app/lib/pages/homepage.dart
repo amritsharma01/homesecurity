@@ -85,22 +85,8 @@ class _HomePageState extends State<HomePage> {
         if (kDebugMode) {
           print("failed");
         }
-        // ignore: use_build_context_synchronously
-        // showDialog(
-        //     context: context,
-        //     builder: (context) {
-        //       return AlertDialogBox(
-        //           alertText:
-        //               'Failed to send image to server. Status code: ${response.statusCode}');
-        //     });
       }
     } catch (e) {
-      // ignore: use_build_context_synchronously
-      // showDialog(
-      //     context: context,
-      //     builder: (context) {
-      //       return AlertDialogBox(alertText: e.toString());
-      //     });
       if (kDebugMode) {
         print(e.toString());
       }
@@ -164,7 +150,7 @@ class _HomePageState extends State<HomePage> {
                 ? ClipRRect(
                     borderRadius: BorderRadius.circular(100),
                     child: Image.file(_image!))
-                : Image.asset("lib/assets/man.png"),
+                : Image.asset("lib/assets/images/man.png"),
           ),
           const SizedBox(
             height: 40,
@@ -216,6 +202,7 @@ class _HomePageState extends State<HomePage> {
                         if (receivedName!.toLowerCase() == "unknown") {
                           // ignore: use_build_context_synchronously
                           showDialog(
+                              barrierDismissible: false,
                               context: context,
                               builder: (context) {
                                 return VerifiedScreen(
@@ -224,8 +211,8 @@ class _HomePageState extends State<HomePage> {
                                   },
                                   color: Colors.red.shade200,
                                   name: receivedName!,
-                                  imgpath: "lib/assets/thief.jpg",
-                                  verified: "lib/assets/unverified.png",
+                                  imgpath: "lib/assets/images/thief.jpg",
+                                  verified: "lib/assets/logos/unverified.png",
                                   color2: Colors.red.shade300,
                                   text: "CLOSE",
                                 );
@@ -233,6 +220,7 @@ class _HomePageState extends State<HomePage> {
                         } else {
                           // ignore: use_build_context_synchronously
                           showDialog(
+                              barrierDismissible: false,
                               context: context,
                               builder: (context) {
                                 return VerifiedScreen(
@@ -247,6 +235,7 @@ class _HomePageState extends State<HomePage> {
                                                 Lock();
                                                 Navigator.pop(context);
                                                 showDialog(
+                                                    barrierDismissible: false,
                                                     context: context,
                                                     builder: (context) {
                                                       return AnimationDialog(
@@ -254,7 +243,7 @@ class _HomePageState extends State<HomePage> {
                                                               "Succesfully Locked!",
                                                           text: "CLOSE",
                                                           animationpath:
-                                                              "lib/assets/lock.json",
+                                                              "lib/assets/animations/lock.json",
                                                           color: Colors
                                                               .green.shade200,
                                                           color2: Colors
@@ -268,7 +257,7 @@ class _HomePageState extends State<HomePage> {
                                               name: "Succesfully Unlocked!",
                                               text: "LOCK",
                                               animationpath:
-                                                  "lib/assets/unlock.json",
+                                                  "lib/assets/animations/unlock.json",
                                               color: Colors.green.shade200,
                                               color2: Colors.green.shade400);
                                         });
@@ -276,8 +265,8 @@ class _HomePageState extends State<HomePage> {
                                   color: Colors.green.shade200,
                                   name: receivedName!,
                                   imgpath:
-                                      "lib/assets/${receivedName!.toLowerCase()}.jpg",
-                                  verified: "lib/assets/verified.png",
+                                      "lib/assets/images/${receivedName!.toLowerCase()}.jpg",
+                                  verified: "lib/assets/logos/verified.png",
                                   text: "UNLOCK",
                                   color2: Colors.green.shade400,
                                 );
