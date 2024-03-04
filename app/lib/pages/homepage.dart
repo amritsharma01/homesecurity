@@ -171,11 +171,19 @@ class _HomePageState extends State<HomePage> {
                 color: Colors.green.shade300,
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: const Center(
-                  child: Text(
-                "CAPTURE",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-              )),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.camera_alt_rounded),
+                  SizedBox(
+                    width: 5,
+                  ),
+                  Text(
+                    "CAPTURE",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                  ),
+                ],
+              ),
             ),
           )),
           const SizedBox(
@@ -200,6 +208,7 @@ class _HomePageState extends State<HomePage> {
 
                       await sendImageToServer(_image!);
 
+                      // ignore: use_build_context_synchronously
                       Navigator.of(context).pop();
                       print(receivedName);
                       if (receivedName != null) {
@@ -287,11 +296,20 @@ class _HomePageState extends State<HomePage> {
                   color: Colors.green.shade300,
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: const Center(
-                    child: Text(
-                  "VERIFY",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-                )),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.verified_rounded),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Text(
+                      "VERIFY",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -307,14 +325,22 @@ class _HomePageState extends State<HomePage> {
               height: 50,
               width: 200,
               decoration: BoxDecoration(
-                color: Colors.green.shade300,
+                color: Colors.red.shade300,
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: const Center(
-                  child: Text(
-                "LOCK",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-              )),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.lock_rounded),
+                  SizedBox(
+                    width: 5,
+                  ),
+                  Text(
+                    "LOCK",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                  ),
+                ],
+              ),
             ),
           )),
         ],
