@@ -232,7 +232,7 @@ class _HomePageState extends State<HomePage> {
                                     openLock(userid!);
                                     Navigator.pop(context);
                                     showDialog(
-                                       barrierDismissible: false,
+                                        barrierDismissible: false,
                                         context: context,
                                         builder: (context) {
                                           return AnimationDialog(
