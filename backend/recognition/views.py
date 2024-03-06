@@ -11,10 +11,10 @@ import numpy as np
 import os
 from django.conf import settings
 import tensorflow as tf
-from keras.models import load_model
+from tensorflow.keras.models import load_model
 from keras import backend as K
 
-model=load_model('../siamese/model/combonaya.keras', custom_objects={"K":K})
+model=load_model('../siamese/model/gedo.h5',custom_objects={"K":K})
         # Initialize MediaPipe Face Detection
 mp_face_detection = mp.solutions.face_detection
 face_detection = mp_face_detection.FaceDetection(min_detection_confidence=0.5)
