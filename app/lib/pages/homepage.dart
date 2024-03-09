@@ -7,6 +7,7 @@ import 'package:minorprojapp/utils/verifiedscreen.dart';
 import 'package:path/path.dart' as Path;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:lottie/lottie.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
@@ -33,7 +34,7 @@ class _HomePageState extends State<HomePage> {
         final cropimage = await cropImage(image.path);
         final finalImage = await saveFilePermanently(cropimage!);
         setState(() {
-          this._image = finalImage;
+          _image = finalImage;
           img = finalImage.path;
           receivedName = null; // Reset received name when new image is selected
         });
@@ -147,7 +148,7 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
+          SizedBox(
             height: 200,
             width: 200,
             child: _image != null
@@ -195,15 +196,21 @@ class _HomePageState extends State<HomePage> {
                   ? () async {
                       // Show loading dialog immediately
                       showDialog(
+                          barrierColor: Colors.black54,
                           context: context,
                           barrierDismissible:
                               false, // Prevents the dialog from closing by touching outside
                           builder: (context) {
-                            return const Center(
-                                child: CircularProgressIndicator(
-                              backgroundColor: Colors.black45,
-                              color: Colors.green,
-                            ));
+                            return Center(
+                              child: SizedBox(
+                                height: 250,
+                                child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(100),
+                                    child: Lottie.asset(
+                                        "lib/assets/animations/loading.json",
+                                        repeat: true)),
+                              ),
+                            );
                           });
 
                       await sendImageToServer(_image!);

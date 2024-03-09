@@ -83,14 +83,14 @@ class RecognizeImageView(APIView):
                 #     id="101103"
                 if(avg_amr==greatest):
                     name="Amrit"
-                    id="101101"
+                   
                 else:
                     name="Ashim"
-                    id="101102"
+                    
                 return {"name":name,
-                    "id":id
+                    "id":101101
                     }
         return {"name":"unknown",
-                "id":0000}
+                "id":000000}
 
     
